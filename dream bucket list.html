@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Dream Canvas & Bucket List</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #faf9f6;
+            --card-bg: #ffffff;
+            --text-main: #2b2b2b;
+            --text-muted: #7c7c7c;
+            --border-color: #f1f5f9;
+            --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+            --radius: 16px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            line-height: 1.6;
+        }
+
+        header {
+            max-width: 1100px;
+            margin: 0 auto 2rem auto;
+            text-align: center;
+        }
+
+        header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 400;
+            color: #1e293b;
+        }
+
+        header p { color: var(--text-muted); font-size: 0.95rem; }
+
+        .action-bar {
+            max-width: 1100px;
+            margin: 0 auto 1.5rem auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .categories-tabs {
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+
+        .tab-btn {
+            border: none;
+            background: transparent;
+            padding: 0.6rem 1.2rem;
+            border-radius: 30px;
+            font-family: inherit;
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .tab-btn.active {
+            background-color: #ffffff;
+            color: var(--text-main);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            font-weight: 500;
+        }
+
+        .subcategories-bar {
+            max-width: 1100px;
+            margin: 0 auto 2rem auto;
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            min-height: 38px;
+        }
+
+        .sub-btn {
+            border: 1px solid #e2e8f0;
+            background: #ffffff;
+            padding: 0.35rem 0.85rem;
+            border-radius: 20px;
+            font-family: inherit;
+            font-size: 0.8rem;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .sub-btn.active {
+            background: #1e293b;
+            color: #ffffff;
+            border-color: #1e293b;
+        }
+
+        .top-controls {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .btn-black {
+            background-color: #1e293b;
+            color: #ffffff;
+            border: none;
+            padding: 0.65rem 1.3rem;
+            border-radius: 30px;
+            font-family: inherit;
+            font-size: 0.88rem;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .btn-black:hover { transform: translateY(-2px); }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #cbd5e1;
+            padding: 0.65rem 1.1rem;
+            border-radius: 30px;
+            font-family: inherit;
+            font-size: 0.88rem;
+            cursor: pointer;
+            color: #475569;
+        }
+
+        .dreams-grid {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .dream-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dream-card:hover { transform: translateY(-4px); }
+
+        .dream-img-container {
+            width: 100%;
+            height: 190px;
+            background-color: #f8fafc;
+            overflow: hidden;
+        }
+
+        .dream-img { width: 100%; height: 100%; object-fit: cover; }
+
+        .dream-content {
+            padding: 1.4rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .dream-tags-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .dream-category {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .dream-subcategory {
+            font-size: 0.72rem;
+            background: #f1f5f9;
+            padding: 0.15rem 0.5rem;
+            border-radius: 6px;
+            color: #475569;
+        }
+
+        .dream-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: #0f172a;
+        }
+
+        .dream-notes {
+            font-size: 0.88rem;
+            color: #475569;
+            margin-bottom: 1rem;
+            flex-grow: 1;
+        }
+
+        .dream-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-bottom: 1rem;
+            font-size: 0.78rem;
+        }
+
+        .meta-tag {
+            background: #f8fafc;
+            border: 1px solid #f1f5f9;
+            padding: 0.2rem 0.55rem;
+            border-radius: 6px;
+            color: #64748b;
+        }
+
+        .dream-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #f8fafc;
+            padding-top: 0.8rem;
+            margin-top: auto;
+        }
+
+        .color-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .card-actions button {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.82rem;
+        }
+
+        .card-actions button:hover { color: #ef4444; }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(4px);
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            padding: 1rem;
+        }
+
+        .modal.active { display: flex; }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--radius);
+            width: 100%;
+            max-width: 520px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .modal-header {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group { margin-bottom: 1rem; }
+
+        .form-group label {
+            display: block;
+            font-size: 0.82rem;
+            margin-bottom: 0.3rem;
+            color: #475569;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.7rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.8rem;
+            margin-top: 1.5rem;
+        }
+
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 4rem 1rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>My Dream Canvas</h1>
+        <p>A minimalist sanctuary for future plans, travels, and mindful desires.</p>
+    </header>
+
+    <div class="action-bar">
+        <div class="categories-tabs">
+            <button class="tab-btn active" onclick="selectCategory('All')">All Dreams</button>
+            <button class="tab-btn" onclick="selectCategory('Mindful Purchases')">🌿 Purchases</button>
+            <button class="tab-btn" onclick="selectCategory('Travel & Exploration')">🗺️ Travel</button>
+            <button class="tab-btn" onclick="selectCategory('Academic & Future')">🎓 Academics</button>
+            <button class="tab-btn" onclick="selectCategory('Life Experiences')">✨ Experiences</button>
+        </div>
+        <div class="top-controls">
+            <button class="btn-outline" onclick="openSettingsModal()">⚙️ Cloud Sync</button>
+            <button class="btn-black" onclick="openModal()">+ Add New Dream</button>
+        </div>
+    </div>
+
+    <div class="subcategories-bar" id="subcategoriesBar"></div>
+
+    <main class="dreams-grid" id="dreamsGrid"></main>
+
+    <!-- Modal Form -->
+    <div class="modal" id="dreamModal">
+        <div class="modal-content">
+            <h2 class="modal-header">Capture an Idea</h2>
+            <form id="dreamForm" onsubmit="saveDream(event)">
+                <div class="form-group">
+                    <label for="title">Title / Idea *</label>
+                    <input type="text" id="title" placeholder="e.g. Linen Bedding or Trip to Ella" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="category">Category *</label>
+                        <select id="category" onchange="updateFormSubcategories()" required>
+                            <option value="Mindful Purchases">🌿 Mindful Purchases</option>
+                            <option value="Travel & Exploration">🗺️ Travel & Exploration</option>
+                            <option value="Academic & Future">🎓 Academic & Future</option>
+                            <option value="Life Experiences">✨ Life Experiences</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="subcategory">Subcategory</label>
+                        <select id="subcategory"></select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Mood Board Image (File or Link)</label>
+                    <input type="file" id="imageFile" accept="image/*" style="margin-bottom: 0.4rem;">
+                    <input type="url" id="imageUrl" placeholder="Or paste image link (https://...)">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="targetYear">Target Year / Timeline</label>
+                        <input type="text" id="targetYear" placeholder="e.g. 2027 / Post-Exams">
+                    </div>
+                    <div class="form-group">
+                        <label for="favColor">Aesthetic Color Tag</label>
+                        <input type="color" id="favColor" value="#94a3b8">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="cost">Estimated Cost / Details</label>
+                    <input type="text" id="cost" placeholder="e.g. $100 or Investment Piece">
+                </div>
+
+                <div class="form-group">
+                    <label for="notes">Notes & Inspiration</label>
+                    <textarea id="notes" rows="3" placeholder="Why do you love this? Links or notes..."></textarea>
+                </div>
+
+                <div class="modal-buttons">
+                    <button type="button" class="btn-outline" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn-black">Add to List</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Sync Settings Modal -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <h2 class="modal-header">Laptop ⇄ Phone Sync Setup</h2>
+            <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 1rem;">Paste your JSONBin keys below so your device stays synchronized automatically.</p>
+            <div class="form-group">
+                <label>JSONBin Bin ID</label>
+                <input type="text" id="binIdInput" placeholder="e.g. 64e1f...">
+            </div>
+            <div class="form-group">
+                <label>JSONBin Master Key</label>
+                <input type="text" id="apiKeyInput" placeholder="e.g. $2a$10$...">
+            </div>
+            <div class="modal-buttons">
+                <button type="button" class="btn-outline" onclick="closeSettingsModal()">Cancel</button>
+                <button type="button" class="btn-black" onclick="saveSyncSettings()">Save & Sync</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const subcategoryMap = {
+            'Mindful Purchases': ['Living Space & Decor', 'Wardrobe & Essentials', 'Tech & Creative Tools', 'Self-Care & Daily Rituals'],
+            'Travel & Exploration': ['Local / In-Country', 'International Voyages'],
+            'Academic & Future': ['Exams & Uni Goals', 'Career & Milestones'],
+            'Life Experiences': ['Events & Concerts', 'Books to Read', 'TV Shows & Movies', 'Skills to Learn', 'General Experiences']
+        };
+
+        let dreams = JSON.parse(localStorage.getItem('my_bucket_list')) || [];
+        let currentCategory = 'All';
+        let currentSubcategory = 'All';
+
+        let binId = localStorage.getItem('jsonbin_bin_id') || '';
+        let apiKey = localStorage.getItem('jsonbin_api_key') || '';
+
+        function openSettingsModal() {
+            document.getElementById('binIdInput').value = binId;
+            document.getElementById('apiKeyInput').value = apiKey;
+            document.getElementById('settingsModal').classList.add('active');
+        }
+
+        function closeSettingsModal() {
+            document.getElementById('settingsModal').classList.remove('active');
+        }
+
+        function saveSyncSettings() {
+            binId = document.getElementById('binIdInput').value.trim();
+            apiKey = document.getElementById('apiKeyInput').value.trim();
+            localStorage.setItem('jsonbin_bin_id', binId);
+            localStorage.setItem('jsonbin_api_key', apiKey);
+            closeSettingsModal();
+            fetchCloudData();
+        }
+
+        async function syncToCloud() {
+            if (!binId || !apiKey) return;
+            try {
+                await fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': apiKey
+                    },
+                    body: JSON.stringify(dreams)
+                });
+            } catch (err) {
+                console.error("Cloud Sync Error:", err);
+            }
+        }
+
+        async function fetchCloudData() {
+            if (!binId || !apiKey) return;
+            try {
+                const res = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, {
+                    headers: { 'X-Master-Key': apiKey }
+                });
+                const data = await res.json();
+                if (data.record) {
+                    dreams = data.record;
+                    localStorage.setItem('my_bucket_list', JSON.stringify(dreams));
+                    renderDreams();
+                }
+            } catch (err) {
+                console.error("Fetch Cloud Data Error:", err);
+            }
+        }
+
+        function updateFormSubcategories() {
+            const cat = document.getElementById('category').value;
+            const subSelect = document.getElementById('subcategory');
+            subSelect.innerHTML = '';
+            if (subcategoryMap[cat]) {
+                subcategoryMap[cat].forEach(sub => {
+                    const opt = document.createElement('option');
+                    opt.value = sub;
+                    opt.textContent = sub;
+                    subSelect.appendChild(opt);
+                });
+            }
+        }
+
+        function openModal() {
+            updateFormSubcategories();
+            document.getElementById('dreamModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('dreamModal').classList.remove('active');
+            document.getElementById('dreamForm').reset();
+        }
+
+        function saveDream(e) {
+            e.preventDefault();
+            const title = document.getElementById('title').value;
+            const category = document.getElementById('category').value;
+            const subcategory = document.getElementById('subcategory').value;
+            const targetYear = document.getElementById('targetYear').value;
+            const favColor = document.getElementById('favColor').value;
+            const cost = document.getElementById('cost').value;
+            const notes = document.getElementById('notes').value;
+            
+            const fileInput = document.getElementById('imageFile');
+            const urlInput = document.getElementById('imageUrl').value;
+
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    createAndSaveCard(title, category, subcategory, e.target.result, targetYear, favColor, cost, notes);
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                createAndSaveCard(title, category, subcategory, urlInput, targetYear, favColor, cost, notes);
+            }
+        }
+
+        function createAndSaveCard(title, category, subcategory, imageSrc, targetYear, favColor, cost, notes) {
+            const newDream = {
+                id: Date.now(),
+                title, category, subcategory,
+                image: imageSrc || '',
+                targetYear, color: favColor, cost, notes
+            };
+            dreams.unshift(newDream);
+            localStorage.setItem('my_bucket_list', JSON.stringify(dreams));
+            syncToCloud();
+            renderDreams();
+            closeModal();
+        }
+
+        function deleteDream(id) {
+            dreams = dreams.filter(dream => dream.id !== id);
+            localStorage.setItem('my_bucket_list', JSON.stringify(dreams));
+            syncToCloud();
+            renderDreams();
+        }
+
+        function selectCategory(cat) {
+            currentCategory = cat;
+            currentSubcategory = 'All';
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.innerText.includes(cat) || (cat === 'All' && btn.innerText.includes('All')));
+            });
+            renderSubcategoriesBar();
+            renderDreams();
+        }
+
+        function selectSubcategory(sub) {
+            currentSubcategory = sub;
+            document.querySelectorAll('.sub-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.innerText === sub || (sub === 'All' && btn.innerText === 'All'));
+            });
+            renderDreams();
+        }
+
+        function renderSubcategoriesBar() {
+            const subBar = document.getElementById('subcategoriesBar');
+            subBar.innerHTML = '';
+            if (currentCategory === 'All' || !subcategoryMap[currentCategory]) return;
+
+            const allSubBtn = document.createElement('button');
+            allSubBtn.className = 'sub-btn active';
+            allSubBtn.innerText = 'All';
+            allSubBtn.onclick = () => selectSubcategory('All');
+            subBar.appendChild(allSubBtn);
+
+            subcategoryMap[currentCategory].forEach(sub => {
+                const btn = document.createElement('button');
+                btn.className = 'sub-btn';
+                btn.innerText = sub;
+                btn.onclick = () => selectSubcategory(sub);
+                subBar.appendChild(btn);
+            });
+        }
+
+        function renderDreams() {
+            const grid = document.getElementById('dreamsGrid');
+            grid.innerHTML = '';
+
+            let filtered = dreams;
+            if (currentCategory !== 'All') filtered = filtered.filter(d => d.category === currentCategory);
+            if (currentSubcategory !== 'All') filtered = filtered.filter(d => d.subcategory === currentSubcategory);
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <p style="font-size: 1.1rem; margin-bottom: 0.5rem;">✨ No dreams added here yet.</p>
+                        <p style="font-size: 0.88rem;">Click "+ Add New Dream" to start adding to your collection!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach(dream => {
+                const card = document.createElement('div');
+                card.className = 'dream-card';
+                card.innerHTML = `
+                    ${dream.image ? `
+                        <div class="dream-img-container">
+                            <img src="${dream.image}" class="dream-img" alt="${dream.title}">
+                        </div>
+                    ` : ''}
+                    <div class="dream-content">
+                        <div class="dream-tags-header">
+                            <span class="dream-category">${dream.category}</span>
+                            ${dream.subcategory ? `<span class="dream-subcategory">${dream.subcategory}</span>` : ''}
+                        </div>
+                        <h3 class="dream-title">${dream.title}</h3>
+                        ${dream.notes ? `<p class="dream-notes">${dream.notes}</p>` : ''}
+                        
+                        <div class="dream-meta">
+                            ${dream.targetYear ? `<span class="meta-tag">🗓️ ${dream.targetYear}</span>` : ''}
+                            ${dream.cost ? `<span class="meta-tag">💎 ${dream.cost}</span>` : ''}
+                        </div>
+
+                        <div class="dream-footer">
+                            <span class="color-dot" style="background-color: ${dream.color}"></span>
+                            <div class="card-actions">
+                                <button onclick="deleteDream(${dream.id})">Remove</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Initialize & Fetch
+        fetchCloudData();
+        renderDreams();
+    </script>
+</body>
+</html>
